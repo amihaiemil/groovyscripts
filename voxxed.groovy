@@ -1,9 +1,17 @@
-class Animal {
+interface Animal {
+    void talk();   
+}
+abstract AbstractAnimal implements Animal {
     String name
     int age
 }
 
-class Cat extends Animal {
+abstract Cat extends AbstractAnimal {
+    //whatever else a Cat can do besides talking... 
+}
+
+// A very lazy, house cat
+class HouseCat extends Cat {
     int meowPerHour
 
     void talk(){
@@ -11,17 +19,26 @@ class Cat extends Animal {
     }
 }
 
-class Garden {
-    def cats = []
+interface Garden {
+    Cat[] cats(); 
 }
 
-def nuage = new Cat(name: "Nuage",age: 3, meowPerHour: 7)
-def chamalo = new Cat(name:"Chamalo", age: 3, meowPerHour: 14)
+class HouseGarden implements Garden {
+    private def cats = []
+        
+    HouseGarden(Cat... cats) {
+        this.cats = cats;
+    }
+}
 
-def garden = new Garden()
-garden.cats << nuage
-garden.cats << chamalo
+Garden home = new HouseGarden(
+    new Cat(name: "Nuage",age: 3, meowPerHour: 7),
+    new Cat(name:"Chamalo", age: 3, meowPerHour: 14)
+);
 
-println "In the garden there are ${garden.cats.size()} cats !"
-garden.cats.each {cat -> cat.talk()}
+println "In the garden there are ${garden.cats().size()} cats !"
+garden.cats().each {cat -> cat.talk()}
+
+//The most important idea in OOP, from my point of view, is to use interfaces for any and all objects,
+//and to avoid the concept of "model objects"/JavaBeans. Also, immurability is a very big plus.
 
